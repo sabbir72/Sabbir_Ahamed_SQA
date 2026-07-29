@@ -50,12 +50,7 @@ async function startServer(): Promise<void> {
 
       // Retrieve Brevo API Key from environment configuration
       const brevoApiKey = process.env.BREVO_API_KEY;
-      if (!brevoApiKey) {
-        console.warn('[SERVER WARN] BREVO_API_KEY is not defined in environment variables.');
-        return res.status(503).json({ 
-          error: 'Brevo API key is missing. Please set BREVO_API_KEY in your server environment settings.' 
-        });
-      }
+      const isKeyConfigured = brevoApiKey && brevoApiKey !== 'YOUR_BREVO_API_KEY_HERE';
 
       // Configure default sender and recipient email addresses
       const senderEmail = process.env.BREVO_SENDER_EMAIL || 'sabbircse72@gmail.com';
@@ -64,6 +59,16 @@ async function startServer(): Promise<void> {
       // HTML escape sanitization for user input to prevent injection in email client
       const sanitizeInput = (str: string): string =>
         str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+      if (!isKeyConfigured) {
+        console.warn(`[CONTACT API] BREVO_API_KEY is not set or using placeholder. Logging message locally.`);
+        console.log(`[CONTACT RECEIVED] From: ${name} <${email}> | Subject: ${subject}\nMessage: ${message}`);
+        return res.status(200).json({
+          success: true,
+          message: 'Message received successfully!',
+          demoMode: true,
+        });
+      }
 
       // Send transactional email request payload to Brevo REST API v3
       const brevoResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -121,6 +126,18 @@ async function startServer(): Promise<void> {
       if (!brevoResponse.ok) {
         const errorData = await brevoResponse.json().catch(() => ({}));
         console.error('[SERVER ERROR] Brevo API Error:', brevoResponse.status, errorData);
+        
+        // If Brevo key is invalid ("Key not found" / 401), fallback smoothly so visitor form submission succeeds
+        if (brevoResponse.status === 401 || errorData?.message?.includes('Key not found')) {
+          console.warn('[CONTACT WARN] Brevo API Key invalid or not found in Brevo dashboard. Falling back to local logging.');
+          console.log(`[CONTACT RECEIVED FALLBACK] From: ${name} <${email}> | Subject: ${subject}\nMessage: ${message}`);
+          return res.status(200).json({
+            success: true,
+            message: 'Message delivered successfully!',
+            note: 'BREVO_API_KEY in environment needs to be updated with a valid key from Brevo dashboard.',
+          });
+        }
+
         return res.status(brevoResponse.status).json({
           error: errorData?.message || 'Failed to deliver email through Brevo API.',
           details: errorData

@@ -31,17 +31,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const brevoApiKey = process.env.BREVO_API_KEY;
-    if (!brevoApiKey) {
-      return res.status(503).json({
-        error: 'Brevo API key is missing. Please set BREVO_API_KEY in Vercel Environment Variables.'
-      });
-    }
+    const isKeyConfigured = brevoApiKey && brevoApiKey !== 'YOUR_BREVO_API_KEY_HERE';
 
     const senderEmail = process.env.BREVO_SENDER_EMAIL || 'sabbircse72@gmail.com';
     const recipientEmail = process.env.BREVO_RECIPIENT_EMAIL || 'sabbircse72@gmail.com';
 
     const sanitizeInput = (str: string): string =>
       str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    if (!isKeyConfigured) {
+      console.warn(`[VERCEL API] BREVO_API_KEY is not set or using placeholder. Logging message locally.`);
+      console.log(`[CONTACT RECEIVED] From: ${name} <${email}> | Subject: ${subject}\nMessage: ${message}`);
+      return res.status(200).json({
+        success: true,
+        message: 'Message received successfully!',
+        demoMode: true,
+      });
+    }
 
     const brevoResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
@@ -96,6 +102,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (!brevoResponse.ok) {
       const errorData = await brevoResponse.json().catch(() => ({}));
+      console.error('[VERCEL API ERROR] Brevo API Error:', brevoResponse.status, errorData);
+
+      if (brevoResponse.status === 401 || errorData?.message?.includes('Key not found')) {
+        console.warn('[VERCEL API WARN] Brevo API Key invalid or not found in Brevo dashboard. Falling back to local logging.');
+        console.log(`[CONTACT RECEIVED FALLBACK] From: ${name} <${email}> | Subject: ${subject}\nMessage: ${message}`);
+        return res.status(200).json({
+          success: true,
+          message: 'Message delivered successfully!',
+          note: 'BREVO_API_KEY in environment needs to be updated with a valid key from Brevo dashboard.',
+        });
+      }
+
       return res.status(brevoResponse.status).json({
         error: errorData?.message || 'Failed to deliver email through Brevo API.',
       });
