@@ -18,7 +18,7 @@ Designed with modern dark luxury aesthetics, responsive micro-interactions, smoo
 
 ## 🛠️ Software QA Capabilities Featured
 
-- **Automation Testing:** Playwright (Python / TypeScript), Cypress, Selenium Webdriver
+- **Automation Testing:** Playwright (Python / TypeScript), Cypress, Selenium Webdriver 10
 - **API & Backend Testing:** Postman, REST Assured, Swagger/OpenAPI, Newman CLI
 - **Performance & Load Testing:** Apache JMeter, K6
 - **Test Management & Bug Tracking:** Jira, TestRail, Zephyr, ClickUp
