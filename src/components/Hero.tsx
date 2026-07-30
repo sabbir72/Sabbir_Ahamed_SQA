@@ -1,8 +1,9 @@
-import { useState, useEffect, ChangeEvent } from 'react';
-import { Mail, Phone, MapPin, Download, ArrowRight, Check, Copy, Code, FileText, Camera, Sliders, RotateCcw, Maximize2, ZoomIn, Upload, X } from 'lucide-react';
+import { useState } from 'react';
+import { Mail, Phone, MapPin, ArrowRight, Check, Copy, Code, FileText } from 'lucide-react';
 import { PERSONAL_INFO } from '../data';
+import sabbirsqa from '../assets/images/sabbir_sqa.jpeg';
 
-const PRIMARY_AVATAR = '/src/assets/images/sabbir_avatar_1784300099360.jpg';
+const PRIMARY_AVATAR = sabbirsqa || PERSONAL_INFO.avatar || '/sabbir_sqa.jpeg';
 const FALLBACK_AVATAR = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=800';
 
 interface HeroProps {
@@ -12,92 +13,6 @@ interface HeroProps {
 
 export default function Hero({ onOpenResumeBuilder, onOpenCoverLetter }: HeroProps) {
   const [copiedEmail, setCopiedEmail] = useState(false);
-
-  // Photo Adjuster States (Persisted in localStorage)
-  const [avatarSrc, setAvatarSrc] = useState<string>(() => {
-    return localStorage.getItem('user_portfolio_avatar') || PERSONAL_INFO.avatar || PRIMARY_AVATAR;
-  });
-  const [fitMode, setFitMode] = useState<'cover-top' | 'cover-center' | 'contain' | 'custom'>(() => {
-    return (localStorage.getItem('user_avatar_fit_mode') as any) || 'cover-top';
-  });
-  const [zoomLevel, setZoomLevel] = useState<number>(() => {
-    return parseFloat(localStorage.getItem('user_avatar_zoom') || '100');
-  });
-  const [posY, setPosY] = useState<number>(() => {
-    return parseFloat(localStorage.getItem('user_avatar_pos_y') || '15');
-  });
-  const [isAdjustModalOpen, setIsAdjustModalOpen] = useState(false);
-
-  useEffect(() => {
-    localStorage.setItem('user_portfolio_avatar', avatarSrc);
-  }, [avatarSrc]);
-
-  useEffect(() => {
-    localStorage.setItem('user_avatar_fit_mode', fitMode);
-  }, [fitMode]);
-
-  useEffect(() => {
-    localStorage.setItem('user_avatar_zoom', zoomLevel.toString());
-  }, [zoomLevel]);
-
-  useEffect(() => {
-    localStorage.setItem('user_avatar_pos_y', posY.toString());
-  }, [posY]);
-
-  const handleResetPhotoSettings = () => {
-    setAvatarSrc(PERSONAL_INFO.avatar || PRIMARY_AVATAR);
-    setFitMode('cover-top');
-    setZoomLevel(100);
-    setPosY(15);
-    localStorage.removeItem('user_portfolio_avatar');
-    localStorage.removeItem('user_avatar_fit_mode');
-    localStorage.removeItem('user_avatar_zoom');
-    localStorage.removeItem('user_avatar_pos_y');
-  };
-
-  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setAvatarSrc(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // Get dynamic image style based on adjustment mode
-  const getImageStyle = () => {
-    if (fitMode === 'contain') {
-      return {
-        objectFit: 'contain' as const,
-        objectPosition: 'center',
-        transform: `scale(${zoomLevel / 100})`,
-      };
-    }
-    if (fitMode === 'cover-center') {
-      return {
-        objectFit: 'cover' as const,
-        objectPosition: 'center',
-        transform: `scale(${zoomLevel / 100})`,
-      };
-    }
-    if (fitMode === 'cover-top') {
-      return {
-        objectFit: 'cover' as const,
-        objectPosition: 'center top',
-        transform: `scale(${zoomLevel / 100})`,
-      };
-    }
-    // Custom fine-tuning
-    return {
-      objectFit: 'cover' as const,
-      objectPosition: `center ${posY}%`,
-      transform: `scale(${zoomLevel / 100})`,
-    };
-  };
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(PERSONAL_INFO.email);
@@ -158,25 +73,15 @@ export default function Hero({ onOpenResumeBuilder, onOpenCoverLetter }: HeroPro
                   {/* Centered Profile Photo Frame */}
                   <div className="relative w-full aspect-square rounded-xl overflow-hidden border border-white/15 shadow-2xl group bg-[#12151C]">
                     <img
-                      src={avatarSrc}
+                      src={PRIMARY_AVATAR}
                       alt="Sabbir Ahamed - Software QA Engineer"
-                      style={getImageStyle()}
-                      className="w-full h-full transition-all duration-300 origin-center"
+                      className="w-full h-full object-cover object-center"
                       referrerPolicy="no-referrer"
                       onError={(e) => {
                         e.currentTarget.onerror = null;
                         e.currentTarget.src = FALLBACK_AVATAR;
                       }}
                     />
-
-                    {/* Adjust Photo Quick Button */}
-                    <button
-                      onClick={() => setIsAdjustModalOpen(true)}
-                      className="absolute top-2.5 right-2.5 z-10 p-2 rounded-xl bg-black/70 backdrop-blur-md text-white/90 hover:text-white border border-white/20 hover:border-[#FF6B35] transition-all shadow-lg hover:scale-105 group cursor-pointer"
-                      title="Adjust Photo / Change Image"
-                    >
-                      <Sliders className="w-3.5 h-3.5 text-[#FF6B35] group-hover:rotate-45 transition-transform" />
-                    </button>
 
                     {/* Gradient Overlay at Bottom of Image */}
                     <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#0B0D12] via-[#0B0D12]/80 to-transparent p-2.5 flex flex-col justify-end pointer-events-none">
@@ -281,29 +186,18 @@ export default function Hero({ onOpenResumeBuilder, onOpenCoverLetter }: HeroPro
                 {/* Lighting Halo */}
                 <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-56 h-56 bg-[#FF6B35]/20 rounded-full blur-3xl pointer-events-none" />
 
-                {/* Centered Profile Photo Frame (~12-15% smaller with clean margin) */}
+                {/* Centered Profile Photo Frame */}
                 <div className="relative w-full aspect-square sm:aspect-[4/4.2] rounded-2xl overflow-hidden border border-white/15 shadow-2xl group bg-[#12151C]">
                   <img
-                    src={avatarSrc}
+                    src={PRIMARY_AVATAR}
                     alt="Sabbir Ahamed - Software QA Engineer"
-                    style={getImageStyle()}
-                    className="w-full h-full transition-all duration-300 origin-center"
+                    className="w-full h-full object-cover object-center"
                     referrerPolicy="no-referrer"
                     onError={(e) => {
                       e.currentTarget.onerror = null;
                       e.currentTarget.src = FALLBACK_AVATAR;
                     }}
                   />
-
-                  {/* Adjust Photo Quick Button */}
-                  <button
-                    onClick={() => setIsAdjustModalOpen(true)}
-                    className="absolute top-3 right-3 z-10 p-2.5 rounded-xl bg-black/70 backdrop-blur-md text-white/90 hover:text-white border border-white/20 hover:border-[#FF6B35] transition-all shadow-lg hover:scale-105 group cursor-pointer flex items-center space-x-1.5"
-                    title="Adjust Photo / Change Image"
-                  >
-                    <Sliders className="w-4 h-4 text-[#FF6B35] group-hover:rotate-45 transition-transform" />
-                    <span className="text-[11px] font-mono text-white font-medium hidden group-hover:inline">Adjust</span>
-                  </button>
 
                   {/* Gradient Overlay at Bottom of Image */}
                   <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0B0D12] via-[#0B0D12]/75 to-transparent p-4 flex flex-col justify-end pointer-events-none">
@@ -340,183 +234,6 @@ export default function Hero({ onOpenResumeBuilder, onOpenCoverLetter }: HeroPro
         </div>
 
       </div>
-
-      {/* Interactive Photo Auto-Adjuster & Customizer Modal */}
-      {isAdjustModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="relative w-full max-w-lg bg-[#12151C] border border-white/15 rounded-3xl p-6 shadow-2xl space-y-6 text-white max-h-[90vh] overflow-y-auto">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-white/10">
-              <div className="flex items-center space-x-2.5">
-                <div className="p-2 rounded-xl bg-[#FF6B35]/20 text-[#FF6B35]">
-                  <Camera className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-display font-extrabold text-lg text-white">Avatar Photo Adjuster</h3>
-                  <p className="text-xs text-[#9CA3AF] font-mono">Auto-adjust photo fit, crop, zoom, or change image</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsAdjustModalOpen(false)}
-                className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-[#9CA3AF] hover:text-white transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Live Preview Frame */}
-            <div className="space-y-2">
-              <label className="text-xs font-mono text-[#9CA3AF] uppercase block">Live Preview</label>
-              <div className="relative w-44 h-44 sm:w-52 sm:h-52 mx-auto rounded-2xl overflow-hidden border-2 border-[#FF6B35]/50 bg-black/50 shadow-inner">
-                <img
-                  src={avatarSrc}
-                  alt="Avatar Preview"
-                  style={getImageStyle()}
-                  className="w-full h-full transition-all duration-300 origin-center"
-                  referrerPolicy="no-referrer"
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = FALLBACK_AVATAR;
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Adjustment Presets */}
-            <div className="space-y-2">
-              <label className="text-xs font-mono text-[#9CA3AF] uppercase block">Automatic Fit Presets</label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
-                <button
-                  type="button"
-                  onClick={() => { setFitMode('cover-top'); setZoomLevel(100); }}
-                  className={`p-2.5 rounded-xl border transition-all text-center cursor-pointer ${
-                    fitMode === 'cover-top'
-                      ? 'bg-[#FF6B35]/20 border-[#FF6B35] text-white font-bold'
-                      : 'bg-white/[0.04] border-white/10 text-[#9CA3AF] hover:text-white hover:border-white/20'
-                  }`}
-                >
-                  Top-Fit (Face)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setFitMode('cover-center'); setZoomLevel(100); }}
-                  className={`p-2.5 rounded-xl border transition-all text-center cursor-pointer ${
-                    fitMode === 'cover-center'
-                      ? 'bg-[#FF6B35]/20 border-[#FF6B35] text-white font-bold'
-                      : 'bg-white/[0.04] border-white/10 text-[#9CA3AF] hover:text-white hover:border-white/20'
-                  }`}
-                >
-                  Center-Cover
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setFitMode('contain'); setZoomLevel(100); }}
-                  className={`p-2.5 rounded-xl border transition-all text-center cursor-pointer ${
-                    fitMode === 'contain'
-                      ? 'bg-[#FF6B35]/20 border-[#FF6B35] text-white font-bold'
-                      : 'bg-white/[0.04] border-white/10 text-[#9CA3AF] hover:text-white hover:border-white/20'
-                  }`}
-                >
-                  Fit Entire
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFitMode('custom')}
-                  className={`p-2.5 rounded-xl border transition-all text-center cursor-pointer ${
-                    fitMode === 'custom'
-                      ? 'bg-[#FF6B35]/20 border-[#FF6B35] text-white font-bold'
-                      : 'bg-white/[0.04] border-white/10 text-[#9CA3AF] hover:text-white hover:border-white/20'
-                  }`}
-                >
-                  Custom Sliders
-                </button>
-              </div>
-            </div>
-
-            {/* Custom Sliders for Fine Tuning */}
-            {fitMode === 'custom' && (
-              <div className="space-y-4 p-4 rounded-2xl bg-white/[0.03] border border-white/10 text-xs font-mono">
-                {/* Zoom Slider */}
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-[#D1D5DB]">
-                    <span className="flex items-center gap-1.5"><ZoomIn className="w-3.5 h-3.5 text-[#FF6B35]" /> Zoom Level</span>
-                    <span className="text-[#FF6B35] font-bold">{zoomLevel}%</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="80"
-                    max="220"
-                    step="5"
-                    value={zoomLevel}
-                    onChange={(e) => setZoomLevel(parseFloat(e.target.value))}
-                    className="w-full accent-[#FF6B35] cursor-pointer"
-                  />
-                </div>
-
-                {/* Vertical Position Y Slider */}
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-[#D1D5DB]">
-                    <span className="flex items-center gap-1.5"><Sliders className="w-3.5 h-3.5 text-[#FF6B35]" /> Vertical Focus (Y)</span>
-                    <span className="text-[#FF6B35] font-bold">{posY}%</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    step="2"
-                    value={posY}
-                    onChange={(e) => setPosY(parseFloat(e.target.value))}
-                    className="w-full accent-[#FF6B35] cursor-pointer"
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Change Image Options */}
-            <div className="space-y-3 pt-2 border-t border-white/10">
-              <label className="text-xs font-mono text-[#9CA3AF] uppercase block">Upload or Change Photo URL</label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={avatarSrc}
-                  onChange={(e) => setAvatarSrc(e.target.value)}
-                  placeholder="Paste Image URL or Path..."
-                  className="flex-1 px-3.5 py-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-xs text-white placeholder:text-white/30 focus:border-[#FF6B35] focus:outline-none font-mono"
-                />
-                <label className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-white cursor-pointer transition-colors flex items-center justify-center shrink-0">
-                  <Upload className="w-4 h-4 text-[#FF6B35]" />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex items-center justify-between pt-4 border-t border-white/10">
-              <button
-                type="button"
-                onClick={handleResetPhotoSettings}
-                className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-mono transition-all cursor-pointer"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>Reset Default</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setIsAdjustModalOpen(false)}
-                className="px-5 py-2.5 rounded-xl bg-[#FF6B35] hover:bg-[#FF814F] text-white text-xs font-mono font-bold shadow-lg shadow-[#FF6B35]/25 transition-all cursor-pointer"
-              >
-                Save & Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }

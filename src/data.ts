@@ -232,7 +232,7 @@ export const PROJECTS: Project[] = [
     id: 'proj-webhishabee',
     title: 'Selenium Automation with Allure – WebHishabee',
     type: 'Automation',
-    link: 'https://github.com/sabbir72/WebHishabee-Selenium-Automation',
+    link: 'https://github.com/sabbir72/SQA_Allur_WebHishabeeAutomation_AllureReport',
     description: 'Automated UI testing of WebHishabee using Java, Selenium WebDriver, TestNG, and Allure reporting. Implemented structured Page Object Model (POM) pattern for scalable multi-page automation.',
     metrics: [
       { label: 'Language', value: 'Java' },
@@ -259,7 +259,7 @@ export const PROJECTS: Project[] = [
     id: 'proj-java-single-page',
     title: 'Java Selenium Single Page Automation - Project 01',
     type: 'Automation',
-    link: 'https://github.com/sabbir72/Java-Selenium-Project01',
+    link: 'https://github.com/sabbir72/Product_automation_basic_singlepage',
     description: 'Automated login, product navigation, cart addition, alert handling, and session verification on a demo e-commerce site using Java, Selenium WebDriver, TestNG, and WebDriverManager.',
     metrics: [
       { label: 'Language', value: 'Java' },
@@ -284,7 +284,7 @@ export const PROJECTS: Project[] = [
     id: 'proj-postman-crud',
     title: 'CRUD API Test with Dynamic Assertion',
     type: 'API',
-    link: 'https://github.com/sabbir72/Postman-CRUD-API-Dynamic-Assertion',
+    link: 'https://github.com/sabbir72/API_Assesment2',
     description: 'Automated API testing with Postman & Newman (CLI mode) including dynamic JavaScript assertions execution, environment variable chaining, and HTML report generation.',
     metrics: [
       { label: 'Tool', value: 'Postman' },
@@ -308,7 +308,7 @@ export const PROJECTS: Project[] = [
     id: 'proj-postman-api',
     title: 'Restful Booker API Test Report',
     type: 'API',
-    link: 'https://github.com/sabbir72/Restful-Booker-Postman-Automation',
+    link: 'https://github.com/sabbir72/ApiLearnwith_csv_env_collection',
     description: 'Automated API testing using Postman & Newman (htmlextra reporter) with 50 requests over 5 iterations. Average response 356 ms, 15 failures identified (response time & DELETE endpoint) with performance optimization recommendations.',
     metrics: [
       { label: 'API Requests', value: '50 Requests' },
@@ -334,7 +334,7 @@ export const PROJECTS: Project[] = [
     id: 'proj-postman-cicd',
     title: 'Postman API Testing CI/CD Automation',
     type: 'API',
-    link: 'https://github.com/sabbir72/Postman-Newman-CICD-Automation',
+    link: 'https://github.com/sabbir72/postman-api-testing-demo',
     description: 'Implemented automated API testing using Postman & Newman integrated with GitHub Actions. Tests execute on every code push, HTML reports are generated, and test artifacts are archived automatically.',
     metrics: [
       { label: 'Tool', value: 'Postman' },
@@ -358,7 +358,7 @@ export const PROJECTS: Project[] = [
     id: 'proj-blazemeter',
     title: 'BlazeMeter Use For Performance Testing',
     type: 'Performance',
-    link: 'https://github.com/sabbir72/BlazeMeter-Performance-Testing',
+    link: 'https://github.com/sabbir72/Performance_test2025_used_Blazmeter',
     description: 'Performed load testing with 50 virtual users for 9 minutes using JMeter/BlazeMeter. System handled traffic efficiently with average response 723 ms, 90% responses within 1787 ms, 0% error rate, and stable CPU/memory usage.',
     metrics: [
       { label: 'Virtual Users', value: '50 Threads' },
