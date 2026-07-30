@@ -23,7 +23,7 @@ export const PERSONAL_INFO = {
   phone: '+8801681387906',
   location: 'Tongi East, Gazipur, Dhaka, Bangladesh',
   github: 'https://github.com/sabbir72',
-  linkedin: 'www.linkedin.com/in/sabbir-ahamed72',
+  linkedin: 'https://www.linkedin.com/in/sabbir-ahamed72',
   githubUser: 'sabbir72',
   linkedinUser: 'Sabbir ahamed',
   objective: 'Seeking a Software Quality Assurance Engineer position where I can leverage 2 years of hands-on experience in manual and automation testing, solid knowledge of software testing principles, and strong attention to detail to ensure high-quality and reliable software solutions, while continuously learning and growing in a professional environment.'
